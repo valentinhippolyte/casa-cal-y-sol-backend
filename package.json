@@ -1,0 +1,13 @@
+{
+  "name": "casa-cal-y-sol-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ical": "^0.8.0",
+    "node-fetch": "^3.3.2"
+  }
+}
