@@ -82,7 +82,8 @@ app.post("/api/send-booking-email", async (req, res) => {
 
     const msg = {
       to: process.env.ADMIN_EMAIL,
-      from: process.env.EMAIL_FROM, // Doit être vérifié dans SendGrid
+      from: process.env.EMAIL_FROM, // Doit être une adresse vérifiée dans SendGrid
+      replyTo: email, // Permet de répondre directement au client
       subject: "Nouvelle réservation - Casa Cal y Sol",
       html: `
         <h2>Nouvelle réservation reçue</h2>
