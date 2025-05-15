@@ -82,8 +82,14 @@ app.post("/api/send-booking-email", async (req, res) => {
 
     const msg = {
       to: process.env.ADMIN_EMAIL,
-      from: process.env.EMAIL_FROM, // Doit être une adresse vérifiée dans SendGrid
-      replyTo: email, // Permet de répondre directement au client
+      from: {
+        email: process.env.EMAIL_FROM,
+        name: "Casa Cal y Sol",
+      },
+      replyTo: {
+        email: email,
+        name: `${firstName} ${lastName}`,
+      },
       subject: "Nouvelle réservation - Casa Cal y Sol",
       html: `
         <h2>Nouvelle réservation reçue</h2>
@@ -97,6 +103,10 @@ app.post("/api/send-booking-email", async (req, res) => {
         <p><strong>Nombre d'adultes:</strong> ${adults}</p>
         <p><strong>Nombre d'enfants:</strong> ${children}</p>
       `,
+      trackingSettings: {
+        clickTracking: { enable: false },
+        openTracking: { enable: false },
+      },
     };
 
     await sgMail.send(msg);
