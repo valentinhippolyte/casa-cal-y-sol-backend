@@ -78,6 +78,7 @@ app.post("/api/send-booking-email", async (req, res) => {
       departureDate,
       adults,
       children,
+      notice,
     } = req.body;
 
     const msg = {
@@ -102,6 +103,11 @@ app.post("/api/send-booking-email", async (req, res) => {
       ).toLocaleDateString()}</p>
         <p><strong>Nombre d'adultes:</strong> ${adults}</p>
         <p><strong>Nombre d'enfants:</strong> ${children}</p>
+        ${
+          notice
+            ? `<p><strong>Informations supplémentaires:</strong><br>${notice}</p>`
+            : ""
+        }
       `,
       trackingSettings: {
         clickTracking: { enable: false },
