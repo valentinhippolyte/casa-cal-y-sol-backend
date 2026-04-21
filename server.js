@@ -2,7 +2,6 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
-import ical from "ical";
 import fetch from "node-fetch";
 
 const app = express();
@@ -42,20 +41,45 @@ app.get("/api/booked-dates", async (req, res) => {
   try {
     const response = await fetch(ICAL_URL);
     const icsText = await response.text();
-    const data = ical.parseICS(icsText);
+
+    const events = icsText.split("BEGIN:VEVENT");
 
     const bookings = [];
 
-    for (const k in data) {
-      const ev = data[k];
-      if (ev.type === "VEVENT") {
+    events.forEach((block) => {
+      const dtstart = block.match(/DTSTART.*:(\d{8})/);
+      const dtend = block.match(/DTEND.*:(\d{8})/);
+
+      if (dtstart && dtend) {
+        const startStr = dtstart[1];
+        const endStr = dtend[1];
+
+        const start = new Date(
+          startStr.slice(0, 4) +
+            "-" +
+            startStr.slice(4, 6) +
+            "-" +
+            startStr.slice(6, 8),
+        );
+
+        const end = new Date(
+          endStr.slice(0, 4) +
+            "-" +
+            endStr.slice(4, 6) +
+            "-" +
+            endStr.slice(6, 8),
+        );
+
         bookings.push({
-          start: ev.start.toISOString(),
-          end: ev.end.toISOString(),
+          start: start.toISOString(),
+          end: end.toISOString(),
           title: "Réservé",
         });
       }
-    }
+    });
+
+    console.log("BOOKINGS LENGTH:", bookings.length);
+    console.log("SAMPLE BOOKINGS:", bookings.slice(0, 3));
 
     res.json(bookings);
   } catch (error) {
